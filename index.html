@@ -121,7 +121,7 @@ console.log(messages)
                   '<h2 class="card-title">' + messages[i]["title"] + '</h2>' +
                   '<p class="card-text"> ' + messages[i]["content"] + '</p>' +
                   '<a href="#" onclick="onClickLikeStory('+plus1+')" class="btn btn-success">Like('+ messages[i]["likes"].length +')</a> ' + ' <a href="#" onclick="onClickDislikeStory('+plus1+')" ' +
-                  'class="btn btn-danger">Dislike('+ messages[i]["dislikes"].length +')</a> <hr> <div class="donations">Tip the author: <a onclick="onClickDonate('+plus1+')" href="#" class="btn btn-primary" >Donate</a> </div> Total donations:  '+ messages[i]["donations"] + " NAS" +
+                  'class="btn btn-danger">Dislike('+ messages[i]["dislikes"].length +')</a> <hr> <div class="donations">Tip the author: <a onclick="onClickDonate('+plus1+')" href="#" class="btn btn-primary" >Donate</a> </div> Total donations:  '+ messages[i]["donations"]/1.0e18 + " NAS" +
                   '</div><div class="card-footer text-muted">\n' +
                   '              Posted on '+ messages[i]["createdOn"]+ '\n by' +
                   '              <a target="_blank" href="https://explorer.nebulas.io/#/testnet/address/'+ messages[i]["owner"]+'">'+ messages[i]["owner"]+'</a>\n' +
