@@ -42,7 +42,7 @@
 
         <!-- Blog Entries Column -->
         <div class="col-md-8">
-          <h1 class="my-4">All blog posts</h1>
+          <h1 class="my-4">All stories from newest to oldest</h1>
           <div id="allPosts"></div>
         </div>
 
@@ -137,9 +137,8 @@
 
       function onGetMessages(resp) {
           var messages = JSON.parse(resp.result);
-console.log(messages)
-          for(var i = 0; i < messages.length; i++) {
-              console.log(messages[i]["id"])
+
+          for(var i = messages.length -1; i >= 0; i--) {
               var plus1 = i+1;
               document.getElementById('allPosts').innerHTML +=
                   '<div class="card mb-4"><div class="card-body">' +
