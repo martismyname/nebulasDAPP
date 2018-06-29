@@ -64,7 +64,7 @@ gulp.task('version', function(){
 });
 
 gulp.task('lint', [], function(){
-    return gulp.src(['./nebpay.js', './libs/*.js'])
+    return gulp.src(['./nebPay.js', './libs/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
 });
@@ -75,7 +75,7 @@ gulp.task('clean', ['lint'], function(cb) {
 
 gulp.task('nebpay', ['clean'], function () {
     return browserify()
-        .require('./nebpay.js', {expose: 'nebpay'})
+        .require('./nebPay.js', {expose: 'nebpay'})
         .transform(babelify)
         .bundle()
         .pipe(plumber({ errorHandler: onError }))
