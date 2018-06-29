@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <script src=nebPay.js></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>NebNews</title>
+
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/blog-home.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">NebNews</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+      <div class="row">
+
+        <!-- Blog Entries Column -->
+        <div class="col-md-8">
+          <h1 class="my-4">All blog posts</h1>
+          <div id="allPosts"></div>
+        </div>
+
+        <!-- Sidebar Widgets Column -->
+        <div class="col-md-4">
+
+          <!-- Side Widget -->
+          <div class="card my-4">
+            <h5 class="card-header">Submit post</h5>
+            <div class="card-body">
+                <h5>Post title:</h5>
+                <input id="postTitle">
+                <h5>Content:</h5>
+                <textarea rows="8" cols="23" id="postContent">
+</textarea>
+                <div>
+                <a onclick="onClickPostMessage()" href="#" class="btn btn-primary" >Submit post</a>
+                </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <!-- /.row -->
+
+    </div>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; NebNews 2018</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  </body>
+  <script>
+
+      "use strict";
+
+      var contract_address = "n1ttxyc19rWnkGmTfJNL73L31Zap3kvz29T";
+
+      var NebPay = require("nebpay");
+      var nebPay = new NebPay();
+
+      //to check if the extension is installed
+      //if the extension is installed, var "webExtensionWallet" will be injected in to web page
+      if(typeof(webExtensionWallet) === "undefined"){
+          alert ("Extension wallet is not installed, please install it first.")
+      }
+
+      // Called by the Refresh button
+      function onClickRefresh() {
+          nebPay.simulateCall(contract_address, 0, "getStories", null,
+              {
+                  listener: onGetMessages
+              });
+
+
+      }
+
+      function onGetMessages(resp) {
+          var messages = JSON.parse(resp.result);
+console.log(messages)
+          for(var i = 0; i < messages.length; i++) {
+              console.log(messages[i]["id"])
+              var plus1 = i+1;
+              document.getElementById('allPosts').innerHTML +=
+                  '<div class="card mb-4"><div class="card-body">' +
+                  '<h2 class="card-title">' + messages[i]["title"] + '</h2>' +
+                  '<p class="card-text"> ' + messages[i]["content"] + '</p>' +
+                  '<a href="#" onclick="onClickLikeStory('+i+')" class="btn btn-success">Like('+ messages[i]["likes"].length +')</a> ' + ' <a href="#" onclick="onClickDislikeStory('+i+')" ' +
+                  'class="btn btn-danger">Dislike('+ messages[i]["dislikes"].length +')</a> <hr> <div class="donations">Tip the author: <a onclick="onClickDonate('+plus1+')" href="#" class="btn btn-primary" >Donate</a> </div> Total donations:  '+ messages[i]["donations"] + " NAS" +
+                  '</div><div class="card-footer text-muted">\n' +
+                  '              Posted on '+ messages[i]["createdOn"]+ '\n by' +
+                  '              <a target="_blank" href="https://explorer.nebulas.io/#/testnet/address/'+ messages[i]["owner"]+'">'+ messages[i]["owner"]+'</a>\n' +
+                  '            </div></div>'
+
+          }
+      }
+
+
+
+      // Called by the post button
+      function onClickPostMessage() {
+          var title = $("#postTitle").val();
+          var content = $("#postContent").val();
+          nebPay.call(contract_address, 0,"newStory", JSON.stringify([title, content]));
+          $("#postTitle").text("");
+          $("#postContent").text("");
+      }
+
+
+
+      function onClickLikeStory(storyId) {
+          nebPay.call(contract_address, 0, "likeStory", JSON.stringify([storyId]));
+      }
+
+      function onClickDislikeStory(storyId) {
+          nebPay.call(contract_address, 0, "dislikeStory", JSON.stringify([storyId]));
+      }
+
+      function onClickDonate(storyId) {
+          nebPay.call(contract_address, 0, "donate", JSON.stringify([storyId]));
+
+      }
+
+      onClickRefresh();
+  </script>
+</html>
